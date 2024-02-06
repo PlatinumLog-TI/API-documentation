@@ -7,8 +7,7 @@ info:
   x-logo:
     url: https://i.imgur.com/EPcxhxr.png
 servers:
-- url: https://virtserver.swaggerhub.com/PlatinumLog/Api-Documentation/1.0.0
-  description: SwaggerHub API Auto Mocking
+
 - url: http://api.tpl.com.br:9909/platinumlog
   description: Servidor Web service do ambiente de produção
 - url: http://homologa.tpl.com.br:9909/platinumlog
