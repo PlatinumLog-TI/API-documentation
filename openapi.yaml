@@ -8,16 +8,7 @@ info:
     
    ### http://wiki.tpl.com.br/images/thumb/c/c9/Logo.png/1050px-Logo.png###
   description: |
-    BASIC, deve ser enviado no cabeçalho da requisição o usuário e a senha gerados pela Platinum Log.
 
-    **HTTP: BearerAuth**
-
-    A autenticação com as APIs REST da PlatinumLog deve ser realizadas por token utilizando Bearer Token. Para autenticar, você deve utilizar o token recebido na rota de Login e adicioná-lo no header da requisição.
-    O header de autenticação deve ser enviado para todos os endpoints disponíveis na API.
-
-
-    **HTTP Authorization Scheme:**  
-    *bearer*
 servers:
 # Added by API Auto Mocking Plugin
 
@@ -34,7 +25,16 @@ security:
 tags:
 - name: Segurança - Platinum
   description: |
-    Endpoints para solicitação de token para acesso aos demais endpoints.
+   BASIC, deve ser enviado no cabeçalho da requisição o usuário e a senha gerados pela Platinum Log.
+
+    **HTTP: BearerAuth**
+
+    A autenticação com as APIs REST da PlatinumLog deve ser realizadas por token utilizando Bearer Token. Para autenticar, você deve utilizar o token recebido na rota de Login e adicioná-lo no header da requisição.
+    O header de autenticação deve ser enviado para todos os endpoints disponíveis na API.
+
+
+    **HTTP Authorization Scheme:**  
+    *bearer*
 - name: Produto
   description: Endpoints para cadastro, consulta e alteração de produtos.
 - name: Ordem de armazenagem
