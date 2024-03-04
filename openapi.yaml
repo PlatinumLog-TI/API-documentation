@@ -1612,6 +1612,10 @@ components:
           type: string
           description: "Indica que o produto é um KIT com composição de mais itens, enviar \"S\" para sim e \"N\" para não"
           example: S
+        ControlaLote:
+          type: string
+          description: "Indica que o produto controla lote, enviar \"S\" para sim e \"N\" para não"
+          example: S
     MaterialSuprimentoDadosProdutoCodigoBarraPost:
       required:
       - CodigoBarras
