@@ -1,0 +1,5 @@
+No terminal, com o arquivo .yaml aberto, execute o seguinte comando.
+
+npx @redocly/cli build-docs openapi.yaml
+
+Esse comando irá criar o arquivo html
