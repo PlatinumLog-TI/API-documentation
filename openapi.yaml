@@ -5,7 +5,7 @@ info:
   description: ""
   version: 1.0.0
   x-logo:
-    url: https://i.imgur.com/EPcxhxr.png
+    url: https://i.imgur.com/HsSofGQ.png
 servers:
 
 - url: http://api.tpl.com.br:9909/platinumlog
