@@ -700,6 +700,22 @@ components:
           type: integer
           description: Numero da ordem gerada
           example: 568515
+
+    RetornoOrdemLiberar_Retorno:
+      properties:
+        id:
+          type: integer
+          description: int32 - Id da ordem de armazenagem gerado no sistema da PlatinumLog.
+          example: 468415
+        Numero:
+          type: integer
+          description: Numero da ordem gerada
+          example: 568515   
+        Mensagem:
+          type: string
+          description: Mensagem
+          example: Ordem com processo de liberacao iniciado
+                           
     RetornoCadastroProduto:
       type: object
       properties:
@@ -804,11 +820,12 @@ components:
           description: Mensagem de retorno
           example: Cancelamento efetuado
     RetornoLiberarOrdemCadastrada:
+      type: object
       properties:
-        Mensagem:
-          type: string
-          description: Mensagem de retorno
-          example: Ordem com processo de liberacao iniciado          
+        Retorno:
+          type: array
+          items:
+            $ref: '#/components/schemas/RetornoOrdemLiberar_Retorno'        
     RetornoPostItemOrdemArmazenagem:
       properties:
         Mensagem:
