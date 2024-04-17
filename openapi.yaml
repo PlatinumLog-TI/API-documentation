@@ -8,6 +8,9 @@ info:
     url: https://i.imgur.com/HsSofGQ.png
 servers:
 
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/PlatinumLog/Api-Documentation/1.0.0
 - url: http://api.tpl.com.br:9909/platinumlog
   description: Servidor Web service do ambiente de produção
 - url: http://homologa.tpl.com.br:9909/platinumlog
@@ -310,6 +313,33 @@ paths:
                 $ref: '#/components/schemas/Erro'
         "401":
           description: Não autorizado (Autenticação não informada ou inválida)
+   
+  /armazem/ordem/liberar:
+    post:
+      tags:
+      - Ordem de armazenagem
+      summary: Liberar ordem de armazenagem
+      description: "Libera ordem para inicio de separação."
+      operationId: postLiberarOrdemArmazenagem
+      requestBody:
+        $ref: '#/components/requestBodies/PostLiberarOrdemArmazenagem'
+      responses:
+        "200":
+          description: Ordem com processo de liberacao iniciado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetornoLiberarOrdemCadastrada'
+        "400":
+          description: Conteúdo inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+              example: "Campo obrigatório não preenchido  O campo \"Numero\" é  obrigatório. Preencha o campo para salvar o registro. Campo: Numero"
+        "401":
+          description: Não autorizado (Autenticação não informada ou inválida)
+  
   /armazem/ordem/item/cadastrar:
     post:
       tags:
@@ -773,6 +803,12 @@ components:
           type: string
           description: Mensagem de retorno
           example: Cancelamento efetuado
+    RetornoLiberarOrdemCadastrada:
+      properties:
+        Mensagem:
+          type: string
+          description: Mensagem de retorno
+          example: Ordem com processo de liberacao iniciado          
     RetornoPostItemOrdemArmazenagem:
       properties:
         Mensagem:
@@ -853,6 +889,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/XMLRetornoGet'
+          ProdutividadeSeparacao:
+            type: array
+            items:
+              $ref: '#/components/schemas/UsuarioSeparacaoRetornoGet'
+          ProdutividadeEmbalagem:
+            type: array
+            items:
+              $ref: '#/components/schemas/UsuarioEmbalagemRetornoGet'              
         description: Ordem de armazenagem
     ProgramacaoGet:
       type: object
@@ -929,6 +973,59 @@ components:
           type: string
           description: Será exportado o XML de retorno na ordem de saída.
           example: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPG5mZVByb2MgeG1sbnM9Imh0dHA6Ly
+          
+    UsuarioSeparacaoRetornoGet:
+      title: Usuários de separação
+      description: Somente informado após inicio de separação
+      allOf:
+      - $ref: '#/components/schemas/ArrayUsuarioSeparacao'
+      - properties:
+          Usuario:
+            type: array
+            items:
+              $ref: '#/components/schemas/LoginSeparacao'
+              
+    UsuarioEmbalagemRetornoGet:
+      title: Usuários de separação
+      description: Somente informado após inicio de separação
+      allOf:
+      - $ref: '#/components/schemas/ArrayUsuarioEmbalagem'
+      - properties:
+          Usuario:
+            type: array
+            items:
+              $ref: '#/components/schemas/LoginEmbalagem'              
+
+    ArrayUsuarioSeparacao:
+      type: object
+      properties:
+        Usuario:
+          type: array
+          description: Usuarios que realizaram a separação dos pedidos
+
+    LoginSeparacao:
+      type: object
+      properties:    
+        Login:
+          type: string
+          description: Login do Usuário que realizou o processo de separação do pedido
+          example: usuario.teste     
+            
+    ArrayUsuarioEmbalagem:
+      type: object
+      properties:
+        Usuario:
+          type: array
+          description: Usuarios que realizaram a embalagem dos pedidos
+
+    LoginEmbalagem:
+      type: object
+      properties:    
+        Login:
+          type: string
+          description: Login do Usuário que realizou o processo de embalagem do pedido
+          example: usuario.teste           
+              
     EntradaGet:
       title: Entrada de mercadoria
       description: Somente informado quando for uma entrada de mercadoria e a ordem estiver encerrada
@@ -939,6 +1036,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ItemEntradaGet'
+              
     EntradaPadraoGet:
       type: object
       properties:
@@ -2256,6 +2354,23 @@ components:
           items:
             $ref: '#/components/schemas/OrdemPost'
       description: Listagem de ordens de armazenagem
+    ListaLiberarOrdem:
+      type: object
+      properties:
+        Ordem:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiberarOrdemPost'
+      description: Listagem de ordens de armazenagem  
+    LiberarOrdemPost:
+      allOf:
+      - $ref: '#/components/schemas/CamposLiberarOrdemPost'
+      - required:
+        - Numero
+        - CnpjFilial
+        - CnpjCliente
+        type: object
+        description: Ordem de armazenagem      
     OrdemPost:
       allOf:
       - $ref: '#/components/schemas/CamposPadraoOrdemPost'
@@ -2376,6 +2491,7 @@ components:
           type: string
           description: Data de programação (dd/mm/yyyy hh:mm)
           example: 07/12/1990 13:30
+          
     CamposOrdemAtreladaEntrada:
       type: object
       properties:
@@ -2449,6 +2565,21 @@ components:
         ImpressaoNf:
           type: integer
           description: "Id do modelo de relatório de impressão da NF (Informação utilizada apenas em ordens de saída) <br>\nValores possíveis: <br> \n* 615 – Danfe padrão (folha A4) <br> \n* 1024 – Danfe simplificada (Etiqueta 10X17)\n"
+          
+    CamposLiberarOrdemPost:
+      type: object
+      properties:
+        Numero:
+          type: string
+          description:  |
+            Numero da ordem de armazenagem que será liberada
+        CnpjFilial:
+          type: string
+          description: CNPJ sem máscara da filial da Platinum Log
+        CnpjCliente:
+          type: string
+          description: CNPJ sem máscara do proprietário da mercadoria
+          
     TipoDocumentoPost:
       type: object
       properties:
@@ -3007,6 +3138,17 @@ components:
               Lista:
                 $ref: '#/components/schemas/ListaOrdem'
             description: Ordem de Armazenagem
+    PostLiberarOrdemArmazenagem:
+      content:
+        application/json:
+          schema:
+            title: Liberar Ordem de Armazenagem
+            type: object
+            properties:
+              Lista:
+                $ref: '#/components/schemas/ListaLiberarOrdem'
+            description: Liberar Ordem de Armazenagem 
+            
     PutOrdemArmazenagem:
       content:
         application/json:
