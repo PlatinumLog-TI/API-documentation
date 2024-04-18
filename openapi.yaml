@@ -9,8 +9,6 @@ info:
 servers:
 
 # Added by API Auto Mocking Plugin
-- description: SwaggerHub API Auto Mocking
-  url: https://virtserver.swaggerhub.com/PlatinumLog/Api-Documentation/1.0.0
 - url: http://api.tpl.com.br:9909/platinumlog
   description: Servidor Web service do ambiente de produção
 - url: http://homologa.tpl.com.br:9909/platinumlog
@@ -585,7 +583,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RetornoConsultaOrdem'
+                $ref: '#/components/schemas/RetornoEnvioStatusOrdem'
         "400":
           description: Conteúdo inválido
         "401":
@@ -873,6 +871,7 @@ components:
           type: string
           description: Data de mudança de status atual da ordem de armazenagem
           example: 01/05/2023 11:23:00
+
     RetornoConsultaOrdem:
       $ref: '#/components/schemas/OrdemGet'
     OrdemGet:
@@ -915,6 +914,48 @@ components:
             items:
               $ref: '#/components/schemas/UsuarioEmbalagemRetornoGet'              
         description: Ordem de armazenagem
+
+    RetornoEnvioStatusOrdem:
+      $ref: '#/components/schemas/OrdemEnvioGet'
+    OrdemEnvioGet:
+      allOf:
+      - $ref: '#/components/schemas/CamposPadraoOrdemGet'
+      - required:
+        - Cliente
+        - ClienteFaturamento
+        - Data
+        - Filial
+        - Numero
+        - Solicitacao
+        - Tipo
+        type: object
+        properties:
+          programacao:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProgramacaoGet'
+          Expedicao:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExpedicaoGet'
+          Separacao:
+            type: array
+            items:
+              $ref: '#/components/schemas/SeparacaoGet'
+          XMLRetorno:
+            type: array
+            items:
+              $ref: '#/components/schemas/XMLRetornoGet'
+          ProdutividadeSeparacao:
+            type: array
+            items:
+              $ref: '#/components/schemas/UsuarioSeparacaoRetornoGet'
+          ProdutividadeEmbalagem:
+            type: array
+            items:
+              $ref: '#/components/schemas/UsuarioEmbalagemRetornoGet'              
+        description: Ordem de armazenagem        
+
     ProgramacaoGet:
       type: object
       properties:
@@ -1099,6 +1140,11 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ItemLoteEntradaGet'
+          Ocorrencias:
+            type: array
+            items:
+              $ref: '#/components/schemas/ItemOcorrenciasEntradaGet'
+
     RecebimentoGet:
       type: array
       items:
@@ -1114,6 +1160,11 @@ components:
     ItemLoteEntradaGet:
       allOf:
       - $ref: '#/components/schemas/ItemLoteGet'
+
+    ItemOcorrenciasEntradaGet:
+      allOf:
+      - $ref: '#/components/schemas/ItemOcorrenciasGet'
+
     DadosRecebimentoGet:
       type: object
       properties:
@@ -1176,6 +1227,50 @@ components:
             description: Sequencial
           Serie:
             $ref: '#/components/schemas/ListaSerieEntradaGet'
+
+    ItemOcorrenciasGet:
+      type: object
+      description: Dados de ocorrências lançadas nos itens
+      allOf:
+      - properties:
+          Tipo:
+            type: string
+            description: Tipo de ocorrência lançada
+            example: AVARIA EMBALAGEM DE ORIGEM
+          Quantidade:
+            type: integer
+            description: Quantidade de itens com ocorrência
+          Series:
+            $ref: '#/components/schemas/ListaSeriesOcorrenciaEntradaGet'
+          Lotes:
+            $ref: '#/components/schemas/ListaLotesOcorrenciaEntradaGet'
+
+    ListaSeriesOcorrenciaEntradaGet:
+      type: array
+      items:
+        $ref: '#/components/schemas/SerieOcorrenciaEntradaGet'    
+
+    ListaLotesOcorrenciaEntradaGet:
+      type: array
+      items:
+        $ref: '#/components/schemas/LoteOcorreciaEntradaGet' 
+
+    SerieOcorrenciaEntradaGet:
+      type: object
+      properties:
+        NumeroSerie:
+          type: string
+          description: Número da série lida na ocorrência do recebimento
+          example: "202246033"
+
+    LoteOcorreciaEntradaGet:
+      type: object
+      properties:
+        NumeroLote:
+          type: string
+          description: Número do lote lida na ocorrência do recebimento
+          example: "202246033"                       
+
     DadosConsultaLoteEntradaPadrao:
       type: object
       properties:
@@ -1253,6 +1348,7 @@ components:
           type: number
           description: Valor
           example: 10
+
     TransporteOcorrenciaGet:
       type: object
       properties:
