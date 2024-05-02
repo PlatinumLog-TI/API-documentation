@@ -2090,6 +2090,9 @@ components:
         CodigoReferencia:
           type: string
           description: Código de referência do produto/SKU
+        NCM:
+          type: string
+          description: Código NCM do produto
         UnidadeMedida:
           type: string
           description: |
