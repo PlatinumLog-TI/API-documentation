@@ -2092,8 +2092,8 @@ components:
           description: Código de referência do produto/SKU
         NCM:
           type: string
-          description: Código NCM do produto
-          example: 802010
+          description: "Código NCM do produto"
+          example: "802010"
         UnidadeMedida:
           type: string
           description: |
