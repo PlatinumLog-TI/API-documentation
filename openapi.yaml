@@ -2093,6 +2093,7 @@ components:
         NCM:
           type: string
           description: Código NCM do produto
+          example: 802010
         UnidadeMedida:
           type: string
           description: |
