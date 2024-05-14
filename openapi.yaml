@@ -1593,7 +1593,7 @@ components:
           type: string
           description: Quantidade de volumes que será expedido
           example: Encerrada
-        Peso:
+        PesoReal:
           type: string
           description: Peso total dos volumes expedidos
           example: Encerrada
@@ -1605,6 +1605,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SeparacaoGet'
+        PesoLiquido:
+          type: string
+          description: Peso Líquido dos volumes expedidos
+          example: Encerrada
+        PesoBruto:
+          type: string
+          description: Peso Bruto dos volumes expedidos
+          example: Encerrada
     RetornoConsultaEstoque:
       type: object
       properties:
