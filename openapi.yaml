@@ -933,7 +933,7 @@ components:
           programacao:
             type: array
             items:
-              $ref: '#/components/schemas/ProgramacaoGet'
+              $ref: '#/components/schemas/ProgramacaoEnviaStatus'
           Expedicao:
             type: array
             items:
@@ -956,6 +956,27 @@ components:
               $ref: '#/components/schemas/UsuarioEmbalagemRetornoGet'              
         description: Ordem de armazenagem        
 
+    ProgramacaoEnviaStatus:
+      type: object
+      properties:
+        Item:
+          type: string
+          description: Código de referência e nome do produto
+          example: ITBMO0114A19 - VINHO BARONE MONTALTO ACQUERELLO NERO D AVOLA TERRE SICILIANE IGT
+        Quantidade:
+          type: number
+          description: Quantidade programada
+        QuantidadeCancelada:
+          type: number
+          description: Quantidade cancelada
+        Sequencial:
+          type: string
+          description: Nº sequencial do item
+          example: "1"
+      description: "Será exportado quando a ordem de saída estiver na situação em operação, ag inicio de operação, ag faturamento venda, em expedição ou encerrada"
+    
+
+
     ProgramacaoGet:
       type: object
       properties:
@@ -970,6 +991,8 @@ components:
           type: number
           description: Quantidade cancelada
       description: "Será exportado quando a ordem de saída estiver na situação em operação, ag inicio de operação, ag faturamento venda, em expedição ou encerrada"
+    
+    
     ExpedicaoGet:
       type: object
       properties:
