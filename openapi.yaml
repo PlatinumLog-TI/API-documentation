@@ -5,7 +5,8 @@ info:
   description: ""
   version: 1.0.0
   x-logo:
-    url: https://i.imgur.com/HsSofGQ.png
+    url: https://i.imgur.com/H8oGPMu.png      
+    
 servers:
 
 # Added by API Auto Mocking Plugin
