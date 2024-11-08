@@ -103,7 +103,6 @@ paths:
         "401":
           description: Não autorizado (Autenticação não informada ou inválida)
 
-
 #METODO DE MATERIALSUPRIMENTO/PRODUTO
  #POST
    /materialSuprimento/produto/cadastrar:
@@ -189,7 +188,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErroParametrosinvalidos'
+               $ref: '#/components/schemas/ErroParametrosinvalidos'
         "401":
           description: Não autorizado (Autenticação não informada ou inválida)
 
@@ -478,6 +477,47 @@ paths:
         "401":
           description: Não autorizado (Autenticação não informada ou inválida)
  
+  #GET EM OPERAÇÃO
+   /armazem/ordem/consultapedidodata:
+    get:
+      tags:
+        - Ordem do Armazem
+      summary: Consultar ordens por data
+      description: Retorna lista de ordens de armazenagem que estão em operação, acrescentando ordens encerradas filtrando por data.
+      operationId: getOrdemArmazenagemData
+      parameters:
+        - name: dataInicioCadastro
+          in: query
+          description: Menor data de encerramento de ordem a pesquisar, formato de data AAAA-MM-DD
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: dataTerminoCadastro
+          in: query
+          description: Maior data de encerramento de ordem a pesquisar, formato de data AAAA-MM-DD
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Informações das ordens de armazenagem em operação e encerradas no período filtrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetornoConsultaOrdemData"
+        "400":
+          description: Conteúdo inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+        "401":
+          description: Não autorizado (Autenticação não informada ou inválida)
+
  #GET ENCERRADOS
    /armazem/ordem/consultapedidoencerrado:
     get:
@@ -525,7 +565,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RetornoConsultaOrdemData"
+                $ref: "#/components/schemas/RetornoConsultaOrdemDataEtapa"
         "400":
           description: Conteúdo inválido
           content:
@@ -2303,9 +2343,7 @@ components:
           description: Peso Bruto
           example: 10                                       
         Serial:
-          $ref: "#/components/schemas/GetOrdemAgNfeListaSerie"   
-
-  
+          $ref: "#/components/schemas/GetOrdemAgNfeListaSerie"    
       description: "Será exportado quando a ordem de saída estiver na situação ag montar volume, ag faturamento venda, em expedição ou encerrada e possuir produtos que controlam série ou lote."
     GetOrdemAgNfeListaSerie:
       type: array
@@ -2318,6 +2356,219 @@ components:
           type: string
           description: Número da série lida no recebimento
           example: "202246033"
+
+    RetornoConsultaOrdemData:
+      type: object
+      properties:
+        Retorno:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetOrdemData"
+    GetOrdemData:
+      allOf:
+        - $ref: "#/components/schemas/GetOrdemDataCamposPadrao"
+        - required:
+            - Cliente
+            - Filial
+            - Tipo
+          type: object
+          properties:
+            programacao:
+              type: array
+              items:
+                $ref: "#/components/schemas/GetOrdemDataProgramacao"
+            Expedicao:
+              type: array
+              items:
+                $ref: "#/components/schemas/GetOrdemDataExpedicao"
+            Separacao:
+              type: array
+              items:
+                $ref: "#/components/schemas/GetOrdemDataSeparacao"
+          description: Ordem de armazenagem
+    GetOrdemDataCamposPadrao:
+      type: object
+      properties:
+        Id:
+          type: string
+          description: Identificador da ordem de armazenagem consultada
+        NumeroOrdem:
+          type: string
+          description: Número da ordem de armazenagem consultada
+        NumeroPedido:
+          type: string
+          description: Número de pedido da ordem de armazenagem consultada
+        NumeroControle:
+          type: string
+          description: Número de controle da ordem de armazenagem consultada
+        Filial:
+          type: string
+          description: CNPJ ou CPF da filial
+        Cliente:
+          type: string
+          description: CNPJ ou CPF do cliente
+        ClienteFinal:
+          type: string
+          description: Nome cliente Final da ordem de saída
+          example: Fulano de Tal
+        ClienteFinalCnpjcpf:
+          type: string
+          description: CNPJ ou CPF do cliente final
+          example: "98765432132"
+        Endereco:
+          type: string
+          description: Endereço do cliente final
+          example: "98765432132"
+        Complemento:
+          type: string
+          description: Complemento do endereço do cliente final
+          example: "Casa 1"
+        Numero:
+          type: string
+          description: Número do endereço do cliente final
+          example: "98765432132"
+        Cep:
+          type: string
+          description: CEP do endereço do cliente final
+          example: "98765432132"
+        Municipio:
+          type: string
+          description: Munincípio do endereço do cliente final
+          example: "98765432132"
+        Estado:
+          type: string
+          description: Sigla do estado do endereço do cliente final
+          example: "98765432132"
+        Bairro:
+          type: string
+          description: Bairro do endereço do cliente final
+          example: Bairro Azenha
+        Telefone:
+          type: string
+          description: Telefone do endereço do cliente final
+          example: "11987654321"
+        Email:
+          type: string
+          description: Email do cliente final
+          example: fulano@xyz.com
+        TransportadoraCnpj:
+          type: string
+          description: CNPJ da transportadora
+          example: "98765432132"
+        Transportadora:
+          type: string
+          description: Nome da transportadora cadastrada na TPL
+          example: "98765432132"
+        Situacao:
+          type: string
+          description: Situação atual da ordem de armazenagem
+          example: Cadastrada
+        DataStatus:
+          type: string
+          description: Data e hora de mudança de status da ordem de saída.
+          example: 01/05/2023 12:59:00
+    GetOrdemDataProgramacao:
+      type: object
+      properties:
+        CodigoReferencia:
+          type: string
+          description: Código de referência do produto
+          example: ITBM1111AA11
+        Item:
+          type: string
+          description: Código de referência e nome do produto
+          example: ITBM1111AA11 - VINHO
+        Quantidade:
+          type: number
+          description: Quantidade programada
+        QuantidadeCancelada:
+          type: number
+          description: Quantidade cancelada
+      description: "Será exportado quando a ordem de saída estiver na situação em operação, ag inicio de operação, ag faturamento venda, em expedição ou encerrada"
+    GetOrdemDataExpedicao:
+      type: object
+      properties:
+        Volume:
+          type: integer
+          description: Quantidade de volumes que serão expedido
+          example: 1
+        PesoLiquido:
+          type: number
+          description: Peso líquido dos volumes expedidos
+        PesoBruto:
+          type: number
+          description: Peso bruto dos volumes expedidos
+        PesoReal:
+          type: number
+          description: Peso real dos volumes expedidos          
+        Cubagem:
+          type: number
+          description: Cubagem unitária dos volumes expedidos
+        Embalagens:
+          type: array
+          description: Lista de embalagens e seus dados.
+          items:
+           $ref: "#/components/schemas/GetOrdemDataDadosEmbalagens"  
+      description: "Será exportado quando a ordem de saída estiver na situação ag faturamento venda, em expedição ou encerrada"
+    GetOrdemDataDadosEmbalagens:
+      type: object
+      properties:
+        NumeroEmbalagem:
+          type: integer
+          description: Número da etiqueta de embalagem
+          example: 1
+        TipoEmbalagem:
+          type: number
+          description: Tipo de embalagem utilizada na expedição
+        CodigoRastreio:
+          type: number
+          description: Código de rastreio dos correios
+        PesoLiquido:
+          type: number
+          description: Peso Líquido do volume expedidos  
+        PesoBruto:
+          type: number
+          description: Peso Bruto do volume expedidos  
+        PesoReal:
+          type: number
+          description: Peso Real do volume expedidos          
+        Cubagem:
+          type: number
+          description: Cubagem unitária do volume expedidos
+      description: "Será exportado quando a ordem de saída estiver na situação ag faturamento venda, em expedição ou encerrada" 
+    GetOrdemDataSeparacao:
+      type: object
+      properties:
+        Situacao:
+          type: string
+          description: Situação atual da separação do item serializado
+          example: Ag. Gerar Carregamento
+        Lote:
+          type: string
+          description: Nº do lote separado (Somente retornará número de lote se na entrada o produto foi recebido realizando a leitura do lote).
+          example: L125636
+        NumeroSerie:
+          type: string
+          description: Nº de série separado (Somente retornará número de série se na entrada o produto foi recebido realizando a leitura da série).
+          example: "551588881547"
+        Fabricacao:
+          type: string
+          description: Data de fabricação do lote (Somente retornará a data de fabricação se na entrada o produto foi recebido comparâmetros de controlar data de fabricação).
+          example: 01/01/2001
+        Validade:
+          type: string
+          description: Data de validade do lote (Somente retornará a data de validade se na entrada o produto foi recebido com parâmetros de controlar data de validade).
+          example: 01/01/2031
+        Sequencial:
+          type: string
+          description: Nº sequencial do item
+          example: "1"
+        Item:
+          type: string
+          description: Código de referência do produto
+          example: 4234-3522-5432   
+      description: "Será exportado quando a ordem de saída estiver na situação ag montar volume, ag faturamento venda, em expedição ou encerrada e possuir produtos que controlam série ou lote."
+
 
 
     RetornoConsultaOrdemEmOperacao:
@@ -2947,7 +3198,7 @@ components:
           description: Valor
           example: 10
 
-    RetornoConsultaOrdemData:
+    RetornoConsultaOrdemDataEtapa:
       type: array
       items:
         $ref: '#/components/schemas/GeOrdemData'
